@@ -1,0 +1,20 @@
+Project Idea?
+  Job Checkpointing system(maybe a web crawler) in java using azure sql storage for state + a controller.
+  ocasionally kill job randomly and reassign to new one(worker should detect it no longer has job and drop it)
+  Then chaos monkey to inject faults on workers to confirm missing hb gets detected and we reassign(allocate new vm)
+
+What I'll be working on:
+  Limitations in topology and how they route things
+  When job starts on a VM, it has to succeed or fail on that machine and can’t be moved. Need to be able to migrate jobs!
+
+
+1) Basic java web crawler in memory on single machine(pull from onine)
+2) setup linux azure vm and have web crawler run there
+3)setup  sql server
+  Output table, columns: urlpage, attached links
+  1 row for remaining jobs
+  in memory dedup only, and then check if already exists in db(add to db if it does)
+and  have it call into and store state in sql server
+4) move to job and subjobs(full website, vs sub website)
+5) spread across machines/containers, move to distributed queue system(can use azure one?)
+6) add auto retry work. Confirm by killing one
