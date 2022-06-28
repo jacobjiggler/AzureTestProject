@@ -1,77 +1,59 @@
+
+import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.*;
 
 import static java.util.concurrent.Executors.*;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
+//todo add try/catch
+//
 
 public class WebCrawler {
-    class HtmlParser {
 
-        public String[] getUrls(String startUrl) {
-            return new String[3];
+    private HashSet<String> links;
+    int maxLinksFetched = 1000;
+    int linksFetchedSoFar = 0;
+
+    public WebCrawler() {
+        links = new HashSet<String>();
+    }
+
+    public void getPageLinks(String URL) {
+        //4. Check if you have already crawled the URLs
+        //(we are intentionally not checking for duplicate content in this example)
+        if (links.contains(URL) )
+            return;
+
+        if(linksFetchedSoFar >= maxLinksFetched) {
+            System.out.println("Reached max size. Returning");
+            return;
         }
-    }
-
-//todo implement html parser
-public List<String> crawl(String startUrl, HtmlParser htmlParser) {
-
-    // find hostname
-    int index = startUrl.indexOf('/', 7);
-    String hostname = (index != -1) ? startUrl.substring(0, index) : startUrl;
-
-    // multi-thread
-    Crawler crawler = new Crawler(startUrl, hostname, htmlParser);
-    crawler.map = new ConcurrentHashMap<>(); // reset result as static property belongs to class, it will go through all of the test cases
-    crawler.result = crawler.map.newKeySet();
-    Thread thread = new Thread(crawler);
-    thread.start();
-
-    crawler.joinThread(thread); // wait for thread to complete
-    return new ArrayList<>(crawler.result);
-}
-}
-
-class Crawler implements Runnable {
-    
-    String startUrl;
-    String hostname;
-    WebCrawler.HtmlParser htmlParser;
-    public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
-    public static Set<String> result = map.newKeySet();
-
-    public Crawler(String startUrl, String hostname, WebCrawler.HtmlParser htmlParser) {
-        this.startUrl = startUrl;
-        this.hostname = hostname;
-        this.htmlParser = htmlParser;
-    }
-
-
-    @Override
-    public void run() {
-        if (this.startUrl.startsWith(hostname) && !this.result.contains(this.startUrl)) {
-            this.result.add(this.startUrl);
-            List<Thread> threads = new ArrayList<>();
-            for (String s : htmlParser.getUrls(startUrl)) {
-                if(result.contains(s)) continue;
-                Crawler crawler = new Crawler(s, hostname, htmlParser);
-                Thread thread = new Thread(crawler);
-                thread.start();
-                threads.add(thread);
-            }
-            for (Thread t : threads) {
-                joinThread(t); // wait for all threads to complete
-            }
-        }
-    }
-
-    public static void joinThread(Thread thread) {
         try {
-            thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+            //4. (i) If not add it to the index
+            if (links.add(URL)) {
+                System.out.println(URL);
+            }
 
+            //2. Fetch the HTML code
+            Document document = Jsoup.connect(URL).get();
+            //3. Parse the HTML to extract links to other URLs
+            Elements linksOnPage = document.select("a[href]");
+
+            //5. For each extracted URL... go back to Step 4.
+            for (Element page : linksOnPage) {
+                getPageLinks(page.attr("abs:href"));
+            }
+        } catch (IOException e) {
+            System.err.println("For '" + URL + "': " + e.getMessage());
+        }
+        linksFetchedSoFar++;
+    }
 
     private String getHostName(String url) {
         url = url.substring(7);
