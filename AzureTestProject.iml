@@ -7,13 +7,23 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Insync/jmart.alb@gmail.com/OneDrive/linuxbin/jsoup-1.15.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Insync/jmart.alb@gmail.com/OneDrive/linuxbin" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Insync/jmart.alb@gmail.com/OneDrive/linuxbin" recursive="false" />
       </library>
     </orderEntry>
   </component>

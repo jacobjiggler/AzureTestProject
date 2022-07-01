@@ -9,12 +9,35 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import java.sql.*;
 
-
-//todo add try/catch
 //
 
 public class WebCrawler {
+
+    //todo fix the mismatch
+    public void ConnectAzure()
+    {
+        // Declare the JDBC object.
+        Connection conn = null;
+
+        try {
+            // Establish the connection.
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            //conn = DriverManager.getConnection(connectionUrl, user, pass);
+            System.out.println("Connecting to database...");
+            conn = DriverManager.getConnection(DBInfo.connectionString);
+            System.out.println("Finished Connecting to database...");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Connect()
+    {
+        ConnectAzure();
+    }
 
     private HashSet<String> links;
     int maxLinksFetched = 1000;

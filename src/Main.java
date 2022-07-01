@@ -7,12 +7,13 @@ to compile java to .class files. -cp is include file
   javac Main.java WebCrawler.java  -cp "jsoup-1.15.1.jar"
 
 to run it
-  java -classpath ~/:jsoup-1.15.1.jar Main
+  java -classpath ~/:jsoup-1.15.1.jar:mssql-jdbc-10.2.1.jre11.jar Main
     which tells it to compile with main as the root and to look in home and specifically for file jsoup under current directory
 
  */
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        new WebCrawler().Connect();
         while(true) {
             try {
                 System.out.println("Starting a run!");
@@ -31,6 +32,8 @@ public class Main {
 /*
 1) Basic java web crawler in memory on single machine(pull from onine)
 2) setup linux azure vm and have web crawler run there
+
+
 3)setup  sql server
   Output table, columns: urlpage, attached links
   1 row for remaining jobs
